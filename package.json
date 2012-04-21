@@ -1,0 +1,11 @@
+{
+    "name": "application-name"
+  , "version": "0.0.1"
+  , "private": true
+  , "dependencies": {
+      "express": "2.5.8"
+    , "mongoose": ">= 2.6.0"
+    , "mongoose-auth": "0.0.12"
+    , "jade": ">= 0.0.1"
+  }
+}
