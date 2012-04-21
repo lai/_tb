@@ -37,6 +37,7 @@ UserSchema.plugin(mongooseAuth, {
           , registerView: 'register.jade'
           , loginSuccessRedirect: '/tasks'
           , registerSuccessRedirect: '/tasks'
+          , loginLocals: {title: 'Login'}
         }
     }
 });
@@ -45,6 +46,7 @@ mongoose.model('User', UserSchema);
 
 mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://localhost/taskboard_dev');
 
+User = mongoose.model('User');
 
 var app = module.exports = express.createServer();
 
@@ -70,15 +72,29 @@ app.configure('production', function(){
   app.use(express.errorHandler());
 });
 
+function validateUser(req, res, next) {
+    if (req.loggedIn) {
+        next();
+    } else {
+        res.redirect('/');
+    }
+}
+
+
 // Routes
 
 app.get('/', routes.index);
+
+app.get('/tasks', validateUser, function (req, res) {
+    res.render('tasks');
+});
 
 app.get('/logout', function (req, res) {
     req.logout();
     res.redirect('/');
 });
 
+mongooseAuth.helpExpress(app);
 
 app.listen(3000, function(){
   console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);

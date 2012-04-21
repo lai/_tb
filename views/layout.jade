@@ -1,6 +1,55 @@
-!!!
+!!! 5
 html
   head
-    title= title
-    link(rel='stylesheet', href='/stylesheets/style.css')
-  body!= body
+    - if (typeof(title) != 'undefined')
+      title= "TaskBoard | " + title
+    - else
+      title= "TaskBoard"
+    
+    link(rel='stylesheet', href='/stylesheets/bootstrap.min.css')
+    link(rel='stylesheet', href='/stylesheets/styles.css')
+    script(type='text/javascript', src='/javascripts/jquery-1.7.2.min.js')
+    script(type='text/javascript', src='/javascripts/bootstrap.min.js')
+    
+  body
+    .navbar.navbar-fixed-top
+      .navbar-inner
+        .container
+          a.brand(href='#') TaskBoard
+          
+          .nav-collapse
+            - if (everyauth.loggedIn)
+              ul.nav
+                li.collapsible: a(href='#', data-toggle="collapse", data-target="#create_task") Create a Task
+                li.collapsible: a(href='#', data-toggle="collapse", data-target="#find_people") Find People
+              ul.nav.pull-right
+                form.navbar-search.pull-left(action="")
+                  input.search-query.span2(type="text", placeholder="Search Tasks")
+                li.divider-vertical
+                li.dropdown
+                  a#notification_icon.dropdown-toggle(href='#', data-toggle="dropdown") #
+                  ul.dropdown-menu
+                    li: a(href='#') Notification 1
+                    li: a(href='#') Notification 2
+                    li: a(href='#') Notification 3
+                    li: a(href='#') Notification 4
+                li.dropdown
+                  a.dropdown-toggle(href='#', data-toggle="dropdown")
+                    i a
+                    User1
+                    b.caret
+                  ul.dropdown-menu
+                    li: a(href='#') Edit Profile
+                    li: a(href='#invite_modal', data-toggle="modal") Invite Friends
+                    li: a(href='#') Help
+                    li.divider
+                    li: a(href='#') Log Out
+                
+            - else
+              ul.nav.pull-right.visitor_links
+                li: a(href='/register', data-toggle="collapse", data-target="#create_task") Register
+                li: a(href='/login', data-toggle="collapse", data-target="#find_people") Log In
+              
+          
+    .main.container
+      != body
