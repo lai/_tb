@@ -1,20 +1,27 @@
 h2 Register
+br
 - if ('undefined' !== typeof errors && errors.length)
   ul#errors
     - each error in errors
       li.error= error
-form(action='/register', method='POST')
-  #Email
-    label(for=everyauth.password.loginFormFieldName) Email
-    input(type='text', name=everyauth.password.loginFormFieldName, value=userParams[everyauth.password.loginFormFieldName])
-  #password
-    label(for=everyauth.password.passwordFormFieldName) Password
-    input(type='password', name=everyauth.password.passwordFormFieldName)
-  #first-name
-    label(for='name.first') First Name
-    input(type='text', name='name.first')
-  #last-name
-    label(for='name.last') Last Name
-    input(type='text', name='name.last')
-  #submit
-    input(type='submit') Register
+form.form-horizontal(action='/register', method='POST')
+  fieldset
+    //legend Register
+    .control-group
+      label.control-label(for=everyauth.password.loginFormFieldName) Email
+      .controls
+        input.input-xlarge(type='text', name=everyauth.password.loginFormFieldName, value=userParams[everyauth.password.loginFormFieldName])
+    .control-group
+      label.control-label(for=everyauth.password.passwordFormFieldName) Password
+      .controls
+        input.input-xlarge(type='password', name=everyauth.password.passwordFormFieldName)
+    .control-group
+      label.control-label(for=everyauth.password.loginFormFieldName) First Name
+      .controls
+        input.input-xlarge(type='text', name='name.first')
+    .control-group
+      label.control-label(for=everyauth.password.loginFormFieldName) Last Name
+      .controls
+        input.input-xlarge(type='text', name='name.last')
+    .form-actions
+      button.btn.btn-primary(type='submit') Register

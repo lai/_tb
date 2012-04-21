@@ -1,13 +1,19 @@
+h2 Log In
+br
 - if ('undefined' !== typeof errors && errors.length)
   ul#errors
     - each error in errors
       li.error= error
-form(action='/login', method='POST')
-  #login
-    label(for=everyauth.password.loginFormFieldName) Email
-    input(type='text', name=everyauth.password.loginFormFieldName, value=email)
-  #password
-    label(for=everyauth.password.passwordFormFieldName) Password
-    input(type='password', name=everyauth.password.passwordFormFieldName)
-  #submit
-    input(type='submit') Login
+form.form-horizontal(action='/login', method='POST')
+  fieldset
+    .control-group
+      label.control-label(for=everyauth.password.loginFormFieldName) Email
+      .controls
+        input.input-xlarge(type='text', name=everyauth.password.loginFormFieldName, value=email)
+    .control-group
+      label.control-label(for=everyauth.password.passwordFormFieldName) Password
+      .controls
+        input.input-xlarge(type='password', name=everyauth.password.passwordFormFieldName)
+    .form-actions
+      button.btn.btn-primary(type='submit') Login
+
