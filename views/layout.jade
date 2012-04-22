@@ -6,10 +6,11 @@ html
     - else
       title= "TaskBoard"
     
-    link(rel='stylesheet', href='/stylesheets/bootstrap.min.css')
-    link(rel='stylesheet', href='/stylesheets/styles.css')
-    script(type='text/javascript', src='/javascripts/jquery-1.7.2.min.js')
-    script(type='text/javascript', src='/javascripts/bootstrap.min.js')
+    link(rel='stylesheet', href='/stylesheets/bootstrap.min.css', charset='utf-8')
+    link(rel='stylesheet', href='/stylesheets/styles.css', charset='utf-8')
+    for file in ['json2', 'jquery-1.7.2.min', 'underscore-min', 'backbone-min', 'bootstrap.min']
+      script(type='text/javascript', src='/javascripts/#{file}.js', charset='utf-8')
+    script(type='text/javascript', src='/javascripts/client.js', charset='utf-8')
     
   body
     .navbar.navbar-fixed-top
@@ -20,8 +21,8 @@ html
           .nav-collapse
             - if (everyauth.loggedIn)
               ul.nav
-                li.collapsible: a(href='#', data-toggle="collapse", data-target="#create_task") Create a Task
-                li.collapsible: a(href='#', data-toggle="collapse", data-target="#find_people") Find People
+                li#create_task_link.collapsible: a(data-toggle="collapse", data-parent="#collapsegroup", data-target="#create_task") Create a Task
+                li#find_people_link.collapsible: a(data-toggle="collapse", data-parent="#collapsegroup", data-target="#find_people") Find People
               ul.nav.pull-right
                 form.navbar-search.pull-left(action="")
                   input.search-query.span2(type="text", placeholder="Search Tasks")
@@ -41,7 +42,7 @@ html
                   ul.dropdown-menu
                     li: a(href='/profile') Edit Profile
                     li: a(href='#invite_modal', data-toggle="modal") Invite Friends
-                    li: a(href='#') Help
+                    li: a(href='/help') Help
                     li.divider
                     li: a(href='/logout') Log Out
                 
@@ -50,6 +51,65 @@ html
                 li: a(href='/register', data-toggle="collapse", data-target="#create_task") Register
                 li: a(href='/login', data-toggle="collapse", data-target="#find_people") Log In
               
-          
+    - if (everyauth.loggedIn)
+      #collapsegroup
+        #create_task.collapse
+          .container
+            form.form-horizontal
+              fieldset
+                .control-group
+                  label.control-label Task
+                  .controls
+                    input.input-xlarge(type="text", placeholder="Task Name")
+                    p.help-block
+                .control-group
+                  label.control-label Action
+                  .controls
+                    input.input-xlarge(type="text", placeholder="Action Name")
+                    i +
+                    p.help-block
+                .control-group
+                  label.control-label Due
+                  .controls
+                    input.input-xlarge(type="text", placeholder="Due Date")
+                    p.help-block
+                .control-group
+                  label.control-label People
+                  .controls
+                    input.input-xlarge(type="text", placeholder="Names")
+                    p.help-block
+                .form-actions
+                  input.btn.btn-primary(type="submit", value="Create")
+                  = " "
+                  input.foldup.btn(type="button", value="Cancel")
+        #find_people.collapse
+          .container
+            form.form-horizontal
+              fieldset
+                .control-group
+                  label.control-label Search by Name
+                  .controls
+                    input.input-xlarge(type="text", placeholder="Enter Name")
+                    p.help-block
+                .form-actions
+                  input.btn.btn-primary(type="submit", value="Connect")
+                  = " "
+                  input.foldup.btn(type="button", value="Cancel")
+    
     .main.container
       != body
+      
+    - if (everyauth.loggedIn)
+      #invite_modal.modal.hide.fade
+        .modal-header
+          a.close(data-dismiss="modal") &times;
+          h3 Email Invitation
+        .modal-body.form-horizontal
+          .control-group
+            label.control-label: i A
+            .controls
+              input.input-xlarge(type="text", placeholder="Enter an email address")
+        .modal-footer
+          a.btn.btn-primary(href="") Send Invitation
+
+

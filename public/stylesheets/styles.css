@@ -4,16 +4,16 @@
 i{font-family:iconSweetsRegular;font-style:normal;}
 .navbar i{font-size:25px;line-height:4px;height:12px;display:inline-block;}
 .dropdown-menu i{font-size:13px;}
-.control-label i{font-size:34px;line-height:26px;height:20px;color:#444;}
+.control-label i{font-size:34px;line-height:7px;height:20px;color:#444;}
 .modal .form-horizontal .control-group{margin:10px 0 6px;}
 body{background-color:#f2f2f2;padding-top:45px;}
 .navbar-inner{padding:3px 0 0;}
 .navbar .brand{font-weight:500;color:#eee;font-size:22px;}
-.navbar .nav>li.collapsible{width:105px;text-align:center;}
+.navbar .nav>li.collapsible{width:105px;text-align:center;cursor:pointer;}
 .navbar .nav>li.active{position:relative;}.navbar .nav>li.active:before{content:"";display:block;width:0;height:0;position:absolute;top:42px;left:42px;border-left:8px solid transparent;border-right:8px solid transparent;border-top:8px solid #dedede;}
 .navbar .nav>li.active:after{content:"";display:block;width:0;height:0;position:absolute;top:42px;left:44px;border-left:6px solid transparent;border-right:6px solid transparent;border-top:6px solid #1f1f1f;}
 .navbar .nav>li>a{padding:13px 10px 4px;}
-#notification_icon{font-family:iconSweetsRegular;font-size:22px;padding:8px 10px 2px;}
+#notification_icon{font-family:iconSweetsRegular;font-size:22px;padding:8px 10px 2px;margin-bottom:7px;}
 #profile_icon i{margin-right:3px;}
 #profile_icon b{margin-left:5px;}
 ul.visitor_links li{margin-left:5px;}
