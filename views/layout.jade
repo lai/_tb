@@ -15,7 +15,7 @@ html
     .navbar.navbar-fixed-top
       .navbar-inner
         .container
-          a.brand(href='#') TaskBoard
+          a.brand(href=everyauth.loggedIn?'/tasks':'/') TaskBoard
           
           .nav-collapse
             - if (everyauth.loggedIn)
@@ -36,14 +36,14 @@ html
                 li.dropdown
                   a#profile_icon.dropdown-toggle(href='#', data-toggle="dropdown")
                     i a
-                    = "User1"
+                    = user.name.first
                     b.caret
                   ul.dropdown-menu
-                    li: a(href='#') Edit Profile
+                    li: a(href='/profile') Edit Profile
                     li: a(href='#invite_modal', data-toggle="modal") Invite Friends
                     li: a(href='#') Help
                     li.divider
-                    li: a(href='#') Log Out
+                    li: a(href='/logout') Log Out
                 
             - else
               ul.nav.pull-right.visitor_links

@@ -6,7 +6,7 @@
 var express = require('express')
   , mongoose  = require('mongoose')
   , Schema = mongoose.Schema
-  , mongooseAuth  = require('mongoose-auth')
+  , mongooseAuth = require('mongoose-auth')
   , routes = require('./routes');
 
 var UserSchema = new Schema({})
@@ -38,9 +38,36 @@ UserSchema.plugin(mongooseAuth, {
           , loginSuccessRedirect: '/tasks'
           , registerSuccessRedirect: '/tasks'
           , loginLocals: {title: 'Login'}
-        }
+          // , methods: { updateProfile: function () {
+          //               console.log("===success===");
+          //               var login = "test@test.com", password="1";
+          //           
+          //               var promise
+          //                 , errors = [];
+          //               if (!login) errors.push('Missing login.');
+          //               if (!password) errors.push('Missing password.');
+          //               if (errors.length) return errors;
+          // 
+          //               promise = this.Promise();
+          //               this.User()().authenticate(login, password, function (err, user) {
+          //                 if (err) {
+          //                   errors.push(err.message || err);
+          //                   return promise.fulfill(errors);
+          //                 }
+          //                 if (!user) {
+          //                   errors.push('Failed login.');
+          //                   return promise.fulfill(errors);
+          //                 }
+          //                 promise.fulfill(user);
+          //               });
+          //               console.log("===success 2===");
+          //               return promise;          
+          //             }}      
+        }      
     }
 });
+
+
 
 mongoose.model('User', UserSchema);
 
@@ -86,12 +113,54 @@ function validateUser(req, res, next) {
 app.get('/', routes.index);
 
 app.get('/tasks', validateUser, function (req, res) {
-    res.render('tasks');
+
+  res.render('tasks');
 });
 
-app.get('/logout', function (req, res) {
-    req.logout();
-    res.redirect('/');
+app.get('/profile', validateUser, function (req, res) {
+  //console.log(mongooseAuth.user);
+  res.render('profile');
+});
+
+app.post('/profile', validateUser, function (req, res) {
+  console.log(req.body);
+  
+  //console.log(updatedUser);
+
+  req.user.email = req.body['email'];
+  req.user.name = {'first': req.body['name.first'], 'last': req.body['name.last']};
+  req.user.save(function(err) {
+    if (err) {
+      req.flash('error', 'update failed');
+      res.render('profile');
+    }
+    switch (req.params.format) {
+      // case 'json':
+      //   var data = d.toObject();
+      //   // TODO: Backbone requires 'id', but can I alias it?
+      //   data.id = data._id;
+      //   res.send(data);
+      // break;
+
+      default:
+        req.flash('info', 'Profile updated');
+        res.redirect('/tasks');
+        
+    }
+  });
+  
+  // var pwd = "2";
+  //   User.findById(req.user.id, function (err, user) {
+  //     user.password = pwd;
+  //     user.save();
+  //   });  
+  
+});
+
+
+
+app.get('/help', function (req, res) {
+    res.render('help');
 });
 
 mongooseAuth.helpExpress(app);
