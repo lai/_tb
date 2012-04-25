@@ -1,18 +1,21 @@
 
-/**
- * Module dependencies.
- */
+// Module dependencies
 
 var express = require('express')
   , mongoose  = require('mongoose')
-  , Schema = mongoose.Schema
   , mongooseAuth = require('mongoose-auth')
   , routes = require('./routes');
 
-var UserSchema = new Schema({})
-  , User;
+var app, Schema, ObjectId, Users, User, Tasks, Task;
 
-UserSchema.plugin(mongooseAuth, {
+Schema = mongoose.Schema;
+ObjectId = mongoose.SchemaTypes.ObjectId;
+
+Users = new Schema({
+  contacts: [Users]
+});
+
+Users.plugin(mongooseAuth, {
     everymodule: {
       everyauth: {
           User: function () {
@@ -37,45 +40,29 @@ UserSchema.plugin(mongooseAuth, {
           , registerView: 'register.jade'
           , loginSuccessRedirect: '/tasks'
           , registerSuccessRedirect: '/tasks'
-          , loginLocals: {title: 'Login'}
-          // , methods: { updateProfile: function () {
-          //               console.log("===success===");
-          //               var login = "test@test.com", password="1";
-          //           
-          //               var promise
-          //                 , errors = [];
-          //               if (!login) errors.push('Missing login.');
-          //               if (!password) errors.push('Missing password.');
-          //               if (errors.length) return errors;
-          // 
-          //               promise = this.Promise();
-          //               this.User()().authenticate(login, password, function (err, user) {
-          //                 if (err) {
-          //                   errors.push(err.message || err);
-          //                   return promise.fulfill(errors);
-          //                 }
-          //                 if (!user) {
-          //                   errors.push('Failed login.');
-          //                   return promise.fulfill(errors);
-          //                 }
-          //                 promise.fulfill(user);
-          //               });
-          //               console.log("===success 2===");
-          //               return promise;          
-          //             }}      
-        }      
+          , loginLocals: {title: 'Login'}  
+        }
     }
 });
 
+var Tasks = new Schema({
+    name: {type: String, default: "New Task"}
+  , dueDate: Date
+  , createDate: {type: Date, default: Date.now }
+  , createdBy: { type: Schema.ObjectId, ref: 'User' }
+  , actions: [{name: String}]
+  , assignedTo: [Users]
+});
 
-
-mongoose.model('User', UserSchema);
+mongoose.model('User', Users);
+mongoose.model('Task', Tasks);
 
 mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://localhost/taskboard_dev');
 
 User = mongoose.model('User');
+Task = mongoose.model('Task');
 
-var app = module.exports = express.createServer();
+app = module.exports = express.createServer();
 
 // Configuration
 
@@ -113,8 +100,20 @@ function validateUser(req, res, next) {
 app.get('/', routes.index);
 
 app.get('/tasks', validateUser, function (req, res) {
-
   res.render('tasks');
+});
+
+// Create task 
+app.post('/tasks.json', validateUser, function(req, res) {
+  var t = new Task(req.body);
+  t.createdBy = req.user._id;
+  t.save(function() {
+    var data = t.toObject();
+    // TODO: Backbone requires 'id', but can I alias it?
+    //data.id = data._id;
+    console.log("task saved!");
+    res.send(data);
+  });
 });
 
 app.get('/profile', validateUser, function (req, res) {
@@ -156,8 +155,6 @@ app.post('/profile', validateUser, function (req, res) {
   //   });  
   
 });
-
-
 
 app.get('/help', function (req, res) {
     res.render('help');

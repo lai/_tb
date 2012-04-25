@@ -1,45 +1,299 @@
-.clearfix{*zoom:1;}.clearfix:before,.clearfix:after{display:table;content:"";}
-.clearfix:after{clear:both;}
-@font-face{font-family:'iconSweetsRegular';src:url('fonts/iconsweets-webfont.eot');src:url('fonts/iconsweets-webfont.eot?#iefix') format('embedded-opentype'),url('fonts/iconsweets-webfont.woff') format('woff'),url('fonts/iconsweets-webfont.ttf') format('truetype'),url('fonts/iconsweets-webfont.svg#iconSweetsRegular') format('svg');font-weight:normal;font-style:normal;}.search-query{border-radius:3px;}
-i{font-family:iconSweetsRegular;font-style:normal;}
-.navbar i{font-size:25px;line-height:4px;height:12px;display:inline-block;}
-.dropdown-menu i{font-size:13px;}
-.control-label i{font-size:34px;line-height:7px;height:20px;color:#444;}
-.modal .form-horizontal .control-group{margin:10px 0 6px;}
-body{background-color:#f2f2f2;padding-top:45px;}
-.navbar-inner{padding:3px 0 0;}
-.navbar .brand{font-weight:500;color:#eee;font-size:22px;}
-.navbar .nav>li.collapsible{width:105px;text-align:center;cursor:pointer;}
-.navbar .nav>li.active{position:relative;}.navbar .nav>li.active:before{content:"";display:block;width:0;height:0;position:absolute;top:42px;left:42px;border-left:8px solid transparent;border-right:8px solid transparent;border-top:8px solid #dedede;}
-.navbar .nav>li.active:after{content:"";display:block;width:0;height:0;position:absolute;top:42px;left:44px;border-left:6px solid transparent;border-right:6px solid transparent;border-top:6px solid #1f1f1f;}
-.navbar .nav>li>a{padding:13px 10px 4px;}
-#notification_icon{font-family:iconSweetsRegular;font-size:22px;padding:8px 10px 2px;margin-bottom:7px;}
-#profile_icon i{margin-right:3px;}
-#profile_icon b{margin-left:5px;}
-ul.visitor_links li{margin-left:5px;}
-#create_task,#find_people{background-color:#f8f8f8;}#create_task:after,#find_people:after{content:"";display:block;border-top:1px solid rgba(0, 0, 0, 0.1);border-bottom:1px solid white;}
-#create_task .container,#find_people .container{padding-top:20px;}
-#create_task .control-group,#find_people .control-group{margin-bottom:4px;}
-#create_task .form-actions,#find_people .form-actions{background:none;border-top:none;margin:0;padding-top:0;padding-bottom:2px;}
-#create_task i,#find_people i{font-size:16px;height:16px;line-height:28px;display:inline-block;margin-left:6px;color:#444;}
-.main{margin-top:20px;}
-.main .span4{background-color:#ececec;min-height:600px;}
-.main .span8{background-color:#f2f2f2;}
-#tasks_controls{float:right;margin:5px;*zoom:1;}#tasks_controls:before,#tasks_controls:after{display:table;content:"";}
-#tasks_controls:after{clear:both;}
-#tasks_controls .dropdown-menu li a{padding-left:28px;}#tasks_controls .dropdown-menu li a i{margin-left:-17px;padding-right:5px;}
-#tasks{margin-top:30px;}#tasks .task{border-top:1px solid #ccc;padding:8px;text-shadow:rgba(255, 255, 255, 0.85) 0px 1px 1px;}#tasks .task:last-child{border-bottom:1px solid #ccc;}
-#tasks .task:hover{background-color:#e2e2e2;}
-#tasks .task.selected{background-color:#dcdcdc;}
-#tasks .task.selected:before{content:"";display:block;float:right;margin-right:-8px;margin-top:22px;width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-right:7px solid #c8c8c8;}
-#tasks .task.selected:after{content:"";display:block;float:right;margin-right:-8px;margin-top:-34px;width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-right:7px solid #f2f2f2;}
-#tasks .task .task_name{font-size:14px;font-weight:bold;display:block;color:#444;}
-#tasks .task .completeness{display:block;font-size:13px;color:#444;}
-#tasks .task .task_due{float:right;font-size:12px;color:#888;}
-#tasks .task .author{display:block;font-size:12px;color:#888;}
-.badge{font-size:12px;padding:0px 10px 0px;text-shadow:none;background-color:#08C;}.badge:hover{cursor:auto;}
-#actions_controls{height:30px;padding:6px 6px 0;}#actions_controls #add_action{float:right;}
-#actions_controls .created-data{color:#888;font-size:12px;}
-.actions .action{height:30px;background-color:rgba(255, 255, 255, 0.65);color:#444;margin-bottom:1px;font-size:16px;}.actions .action.completed{background-color:transparent;color:#888;}.actions .action.completed .checkbox{border:none;background:none;}.actions .action.completed .checkbox:after{content:"=";display:table;font-family:iconSweetsRegular;margin-left:-15px;margin-right:-1px;}
-.actions .action .action_name{display:inline-block;padding:6px 0;}
-.actions .action .checkbox{width:20px;height:20px;background:rgba(255, 255, 255, 0.7);margin-left:8px;margin-right:8px;border:1px solid #e0e0e0;border-radius:2px;}
+.clearfix {
+  *zoom: 1;
+}
+.clearfix:before,
+.clearfix:after {
+  display: table;
+  content: "";
+}
+.clearfix:after {
+  clear: both;
+}
+@font-face {
+  font-family: 'iconSweetsRegular';
+  src: url('fonts/iconsweets-webfont.eot');
+  src: url('fonts/iconsweets-webfont.eot?#iefix') format('embedded-opentype'), url('fonts/iconsweets-webfont.woff') format('woff'), url('fonts/iconsweets-webfont.ttf') format('truetype'), url('fonts/iconsweets-webfont.svg#iconSweetsRegular') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+.search-query {
+  border-radius: 3px;
+}
+i {
+  font-family: iconSweetsRegular;
+  font-style: normal;
+}
+.navbar i {
+  font-size: 25px;
+  line-height: 4px;
+  height: 12px;
+  display: inline-block;
+}
+.dropdown-menu i {
+  font-size: 13px;
+}
+.control-label i {
+  font-size: 34px;
+  line-height: 7px;
+  height: 20px;
+  color: #444;
+}
+.modal .form-horizontal .control-group {
+  margin: 10px 0 6px;
+}
+body {
+  background-color: #f2f2f2;
+  padding-top: 45px;
+}
+.navbar-inner {
+  padding: 3px 0 0;
+}
+.navbar .brand {
+  font-weight: 500;
+  color: #eee;
+  font-size: 22px;
+  /*text-indent: -9999px;
+		width: 133px;
+		height: 21px;
+		padding: 0;
+		margin-top: 6px;
+		background: url("../img/logo.png") no-repeat;*/
+
+}
+.navbar .nav > li.collapsible {
+  width: 105px;
+  text-align: center;
+  cursor: pointer;
+}
+.navbar .nav > li.active {
+  position: relative;
+}
+.navbar .nav > li.active:before {
+  content: "";
+  display: block;
+  width: 0;
+  height: 0;
+  position: absolute;
+  top: 42px;
+  left: 42px;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 8px solid #dedede;
+}
+.navbar .nav > li.active:after {
+  content: "";
+  display: block;
+  width: 0;
+  height: 0;
+  position: absolute;
+  top: 42px;
+  left: 44px;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid #1f1f1f;
+}
+.navbar .nav > li > a {
+  padding: 13px 10px 4px;
+}
+#notification_icon {
+  font-family: iconSweetsRegular;
+  font-size: 22px;
+  padding: 8px 10px 2px;
+  margin-bottom: 7px;
+}
+#profile_icon i {
+  margin-right: 3px;
+}
+#profile_icon b {
+  margin-left: 5px;
+}
+ul.visitor_links li {
+  margin-left: 5px;
+}
+#create_task,
+#find_people {
+  background-color: #f8f8f8;
+}
+#create_task:after,
+#find_people:after {
+  content: "";
+  display: block;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid white;
+}
+#create_task .container,
+#find_people .container {
+  padding-top: 20px;
+}
+#create_task .control-group,
+#find_people .control-group {
+  margin-bottom: 4px;
+}
+#create_task .form-actions,
+#find_people .form-actions {
+  background: none;
+  border-top: none;
+  margin: 0;
+  padding-top: 0;
+  padding-bottom: 2px;
+}
+#create_task i,
+#find_people i {
+  font-size: 16px;
+  height: 16px;
+  line-height: 28px;
+  display: inline-block;
+  margin-left: 6px;
+  color: #444;
+}
+.main {
+  margin-top: 20px;
+}
+.main .span4 {
+  background-color: #ececec;
+  min-height: 600px;
+}
+.main .span8 {
+  background-color: #f2f2f2;
+}
+#tasks_controls {
+  float: right;
+  margin: 5px;
+  *zoom: 1;
+}
+#tasks_controls:before,
+#tasks_controls:after {
+  display: table;
+  content: "";
+}
+#tasks_controls:after {
+  clear: both;
+}
+#tasks_controls .dropdown-menu li a {
+  padding-left: 28px;
+}
+#tasks_controls .dropdown-menu li a.selected:before {
+  content: "=";
+  display: inline-block;
+  font-family: iconSweetsRegular;
+  margin-left: -17px;
+  width: 17px;
+  margin-top: -3px;
+}
+#tasks {
+  margin-top: 30px;
+}
+#tasks .task {
+  border-top: 1px solid #ccc;
+  padding: 8px;
+  text-shadow: rgba(255, 255, 255, 0.85) 0px 1px 1px;
+}
+#tasks .task:last-child {
+  border-bottom: 1px solid #ccc;
+}
+#tasks .task:hover {
+  background-color: #e2e2e2;
+}
+#tasks .task.selected {
+  background-color: #dcdcdc;
+}
+#tasks .task.selected:before {
+  content: "";
+  display: block;
+  float: right;
+  margin-right: -8px;
+  margin-top: 22px;
+  width: 0;
+  height: 0;
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+  border-right: 7px solid #c8c8c8;
+}
+#tasks .task.selected:after {
+  content: "";
+  display: block;
+  float: right;
+  margin-right: -8px;
+  margin-top: -34px;
+  width: 0;
+  height: 0;
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+  border-right: 7px solid #f2f2f2;
+}
+#tasks .task .task_name {
+  font-size: 14px;
+  font-weight: bold;
+  display: block;
+  color: #444;
+}
+#tasks .task .completeness {
+  display: block;
+  font-size: 13px;
+  color: #444;
+}
+#tasks .task .task_due {
+  float: right;
+  font-size: 12px;
+  color: #888;
+}
+#tasks .task .created_by {
+  display: block;
+  font-size: 12px;
+  color: #888;
+}
+.badge {
+  font-size: 12px;
+  padding: 0px 10px 0px;
+  text-shadow: none;
+  background-color: #08C;
+}
+.badge:hover {
+  cursor: auto;
+}
+#actions_controls {
+  height: 30px;
+  padding: 6px 6px 0;
+}
+#actions_controls #add_action {
+  float: right;
+}
+#actions_controls .created-data {
+  color: #888;
+  font-size: 12px;
+}
+.actions .action {
+  height: 30px;
+  background-color: rgba(255, 255, 255, 0.65);
+  color: #444;
+  margin-bottom: 1px;
+  font-size: 16px;
+}
+.actions .action.completed {
+  background-color: transparent;
+  color: #888;
+}
+.actions .action.completed .checkbox {
+  border: none;
+  background: none;
+}
+.actions .action.completed .checkbox:after {
+  content: "=";
+  display: table;
+  font-family: iconSweetsRegular;
+  margin-left: -15px;
+  margin-right: -1px;
+}
+.actions .action .action_name {
+  display: inline-block;
+  padding: 6px 0;
+}
+.actions .action .checkbox {
+  width: 20px;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.7);
+  margin-left: 8px;
+  margin-right: 8px;
+  border: 1px solid #e0e0e0;
+  border-radius: 2px;
+}

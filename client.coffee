@@ -1,4 +1,21 @@
 $ ->
+  
+  _.templateSettings = {
+    interpolate: /\{\{(.+?)\}\}/g
+  }  
+  
+  class Task extends Backbone.Model
+    idAttribute: "_id"
+    
+    defaults:
+      name: "New Task Name"
+  
+  class ListView extends Backbone.View
+    
+    el: $ 'body'
+    
+  
+  
   collapse1 = $("#create_task")
   collapse1_link = $("#create_task_link")
   collapse2 = $("#find_people")
