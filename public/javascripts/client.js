@@ -5,8 +5,7 @@
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
   $(function() {
-    var CollapsibleView, Task, TaskListItemView, TaskListView, Tasks, createTaskView, findPeopleView, taskListView, tasks,
-      _this = this;
+    var CollapsibleView, Task, TaskListItemView, TaskListView, Tasks, createTaskView, findPeopleView, taskListView, tasks;
     _.templateSettings = {
       interpolate: /\{\{(.+?)\}\}/g
     };
@@ -204,7 +203,12 @@
     });
     return createTaskView.delegateEvents({
       "submit #createTaskForm": function() {
-        return console.log("delegated");
+        console.log("delegated");
+        console.log(this.$('input[name]'));
+        return tasks.create({
+          name: this.$('input[name]').val(),
+          createdBy: $.cookie('user_id')
+        });
       }
     });
   });

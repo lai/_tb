@@ -12,7 +12,8 @@ Schema = mongoose.Schema;
 ObjectId = mongoose.SchemaTypes.ObjectId;
 
 Users = new Schema({
-  contacts: [Users]
+    //email: { type: String, lowercase: true, index: { unique: true, sparse: true } }
+  contacts: [{ type: Schema.ObjectId, ref: 'User'}]
 });
 
 Users.plugin(mongooseAuth, {
@@ -56,6 +57,7 @@ Users.plugin(mongooseAuth, {
         }
     }
 });
+Users.email
 
 var Tasks = new Schema({
     name: { type: String, default: "New Task" }
@@ -64,7 +66,7 @@ var Tasks = new Schema({
   , createDate: { type: Date, default: Date.now }
   , createdBy: { type: Schema.ObjectId, ref: 'User' }
   , actions: [{ name: String, done: { type: Boolean, default: false } }]
-  , assignedTo: [Users]
+  , assignedTo: [{ type: Schema.ObjectId, ref: 'User'}]
 });
 
 mongoose.model('User', Users);
@@ -126,13 +128,15 @@ app.get('/tasks.json', validateUser, function(req, res) {
 
 // Create task 
 app.post('/tasks.json', validateUser, function(req, res) {
-  console.log(req.body);
+  //console.log(req.body);
   var t = new Task(req.body);
-  t.createdBy = req.user._id;
-  t.save(function() {
+  //t.assignedTo.push(req.user);
+  console.log(t);
+  //t.createdBy = req.user._id;
+  t.save(function(err) {
+    if (err)
+      console.log("failed"+err);
     var data = t.toObject();
-    // TODO: Backbone requires 'id', but can I alias it?
-    //data.id = data._id;
     console.log("task saved!");
     res.send(data);
   });

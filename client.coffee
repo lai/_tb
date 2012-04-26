@@ -111,8 +111,14 @@ $ ->
   findPeopleView = new CollapsibleView el: '#find_people'
   
   createTaskView.delegateEvents({
-      "submit #createTaskForm": =>
+      "submit #createTaskForm": ->
         console.log("delegated")
+        console.log(@$('input[name]'))
+        tasks.create({
+            name: @$('input[name]').val()
+          , createdBy: $.cookie('user_id')
+        })
+        # clean the form and fold it up
   });
   
 
