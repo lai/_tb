@@ -22,12 +22,12 @@ ul.nav.nav-pills
         li: a(href="#") Show Completed Tasks
         
     #tasks
-      #task_row_template.task(style='display: none')
+      #task_list_item_template(style='display: none')
         span.badge.pull-right {{ badgeNum }}
         span.task_name {{ taskName }}
         span.completeness {{ completenessMsg }}
         span.task_due {{ dueMsg }}
-        span.created_by {{ createdBy }}
+        span.created_by Created by {{ createdByName }}
 
   
   // TaskContentView

@@ -8,9 +8,11 @@ html
     
     link(rel='stylesheet', href='/stylesheets/bootstrap.min.css', charset='utf-8')
     link(rel='stylesheet', href='/stylesheets/styles.css', charset='utf-8')
-    for file in ['json2', 'jquery-1.7.2.min', 'underscore-min', 'backbone-min', 'bootstrap.min']
+    for file in ['json2', 'jquery-1.7.2.min', 'underscore', 'backbone', 'bootstrap.min']
       script(type='text/javascript', src='/javascripts/#{file}.js', charset='utf-8')
-    script(type='text/javascript', src='/javascripts/client.js', charset='utf-8')
+    - if (everyauth.loggedIn)
+      script(type='text/javascript', src='/javascripts/jquery.cookie.js', charset='utf-8')
+      script(type='text/javascript', src='/javascripts/client.js', charset='utf-8')      
     
   body
     .navbar.navbar-fixed-top
@@ -55,12 +57,12 @@ html
       #collapsegroup
         #create_task.collapse
           .container
-            form.form-horizontal
+            form#createTaskForm.form-horizontal(onsubmit="return false")
               fieldset
                 .control-group
                   label.control-label Task
                   .controls
-                    input.input-xlarge(type="text", placeholder="Task Name")
+                    input.input-xlarge(type="text", name="name", placeholder="Task Name")
                     p.help-block
                 .control-group
                   label.control-label Action

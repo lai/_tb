@@ -21,13 +21,18 @@ Users.plugin(mongooseAuth, {
           User: function () {
             return User;
           }
+        , handleLogout: function (req, res) {
+            res.clearCookie('user_id');
+            req.logout();
+            this.redirect(res, this.logoutRedirectPath());
+          }
       }
     }
   , password: {
         loginWith: 'email'
       , extraParams: {
             name: {
-                first: String
+                first: { type: String, required: true}
               , last: String
             }
         }
@@ -38,19 +43,27 @@ Users.plugin(mongooseAuth, {
           , getRegisterPath: '/register'
           , postRegisterPath: '/register'
           , registerView: 'register.jade'
-          , loginSuccessRedirect: '/tasks'
-          , registerSuccessRedirect: '/tasks'
+          , respondToRegistrationSucceed: function (res, user, data) {
+                res.cookie('user_id', user._id, { expires: 0 });                
+                this.redirect(res, '/tasks');
+            }
+          , respondToLoginSucceed: function (res, user, data) {
+                res.cookie('user_id', user._id, { expires: 0 });                
+                this.redirect(res, '/tasks');
+            }
           , loginLocals: {title: 'Login'}  
+          , registerLocals: {title: 'Register'}  
         }
     }
 });
 
 var Tasks = new Schema({
-    name: {type: String, default: "New Task"}
+    name: { type: String, default: "New Task" }
   , dueDate: Date
-  , createDate: {type: Date, default: Date.now }
+  , done: { type: Boolean, default: false }
+  , createDate: { type: Date, default: Date.now }
   , createdBy: { type: Schema.ObjectId, ref: 'User' }
-  , actions: [{name: String}]
+  , actions: [{ name: String, done: { type: Boolean, default: false } }]
   , assignedTo: [Users]
 });
 
@@ -103,8 +116,17 @@ app.get('/tasks', validateUser, function (req, res) {
   res.render('tasks');
 });
 
+app.get('/tasks.json', validateUser, function(req, res) {
+  Task.find(function(err, documents) {
+      res.send(documents.map(function(d) {
+        return d.toObject();
+      }));
+  });
+});
+
 // Create task 
 app.post('/tasks.json', validateUser, function(req, res) {
+  console.log(req.body);
   var t = new Task(req.body);
   t.createdBy = req.user._id;
   t.save(function() {
