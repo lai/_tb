@@ -97,11 +97,12 @@
       };
 
       TaskListItemView.prototype.render = function() {
+        var difference, dueDate, today;
         $(this.el).html(this.template({
           taskName: this.model.get('name') || "&nbsp;",
           badgeNum: "",
           completenessMsg: "&nbsp;",
-          dueMsg: "",
+          dueMsg: this.model.get("dueDate") ? (dueDate = (new Date(this.model.get("dueDate"))).getTime(), today = (new Date()).setHours(0, 0, 0, 0), console.log(this.model.get("dueDate")), difference = dueDate - today, difference /= 1000 * 60 * 60 * 24, difference === 0 ? "today" : difference === 1 ? "1 day left" : difference === -1 ? "1 day overdue" : difference > 1 ? difference + " days left" : difference < -1 ? difference + " days overdue" : void 0) : "",
           createdByName: this.model.get("createdBy") === $.cookie('user_id') ? "Me" : "Other"
         }));
         return this;
@@ -192,6 +193,10 @@
         return $(this.el).collapse('hide');
       };
 
+      CollapsibleView.prototype.clearForm = function() {
+        return this.$(".controls input").val("");
+      };
+
       return CollapsibleView;
 
     })(Backbone.View);
@@ -202,13 +207,18 @@
       el: '#find_people'
     });
     return createTaskView.delegateEvents({
+      "click input.foldup": "close",
       "submit #createTaskForm": function() {
         console.log("delegated");
-        console.log(this.$('input[name]'));
-        return tasks.create({
-          name: this.$('input[name]').val(),
-          createdBy: $.cookie('user_id')
+        console.log(this.$('input[name=name]'));
+        console.log(this.$('input[name=dueDate]'));
+        tasks.create({
+          name: this.$('input[name=name]').val() || "New Task",
+          createdBy: $.cookie('user_id'),
+          dueDate: this.$('input[name=dueDate]').val()
         });
+        this.close();
+        return this.clearForm();
       }
     });
   });

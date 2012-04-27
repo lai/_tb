@@ -12,7 +12,6 @@ $ ->
     defaults:
       name: "New Task"
       done: false
-
       
     toggle: ->
       @save done: !@get("done")
@@ -56,8 +55,27 @@ $ ->
           taskName: @model.get('name') || "&nbsp;"
         , badgeNum: ""
         , completenessMsg: "&nbsp;"
-        , dueMsg: ""
-        , createdByName: if (@model.get("createdBy") == $.cookie('user_id')) then "Me" else "Other"
+        , dueMsg:
+            if (@model.get("dueDate"))
+              dueDate = (new Date(@model.get("dueDate"))).getTime()
+              today = (new Date()).setHours(0, 0, 0, 0)
+              console.log(@model.get("dueDate"))
+              difference = dueDate - today
+              difference /= (1000*60*60*24)
+              if (difference == 0)
+                "today"
+              else if (difference == 1)
+                "1 day left"
+              else if (difference == -1)
+                "1 day overdue"
+              else if (difference > 1)
+                difference + " days left"
+              else if (difference < -1)
+                difference + " days overdue"
+            else
+              ""
+        , createdByName: 
+            if (@model.get("createdBy") == $.cookie('user_id')) then "Me" else "Other"
       }) 
       @
       
@@ -105,20 +123,27 @@ $ ->
 
     close: ->
       $(@el).collapse('hide')
+      
+    clearForm: ->
+      @.$(".controls input").val("")
   
   
   createTaskView = new CollapsibleView el: '#create_task'
   findPeopleView = new CollapsibleView el: '#find_people'
   
   createTaskView.delegateEvents({
+      "click input.foldup": "close"
       "submit #createTaskForm": ->
         console.log("delegated")
-        console.log(@$('input[name]'))
+        console.log(@$('input[name=name]'))
+        console.log(@$('input[name=dueDate]'))
         tasks.create({
-            name: @$('input[name]').val()
+            name: @$('input[name=name]').val() || "New Task"
           , createdBy: $.cookie('user_id')
+          , dueDate: @$('input[name=dueDate]').val()
         })
-        # clean the form and fold it up
+        @close()
+        @clearForm()
   });
   
 

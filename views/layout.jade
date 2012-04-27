@@ -12,6 +12,7 @@ html
       script(type='text/javascript', src='/javascripts/#{file}.js', charset='utf-8')
     - if (everyauth.loggedIn)
       script(type='text/javascript', src='/javascripts/jquery.cookie.js', charset='utf-8')
+      script(type='text/javascript', src='/javascripts/bootstrap-datepicker.js', charset='utf-8')
       script(type='text/javascript', src='/javascripts/client.js', charset='utf-8')      
     
   body
@@ -73,7 +74,7 @@ html
                 .control-group
                   label.control-label Due
                   .controls
-                    input.input-xlarge(type="text", placeholder="Due Date")
+                    input.datepicker.input-xlarge(type="text", name="dueDate", placeholder="Due Date")
                     p.help-block
                 .control-group
                   label.control-label People
