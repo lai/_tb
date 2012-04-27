@@ -54,7 +54,11 @@ $ ->
           #@model.toJSON()
           taskName: @model.get('name') || "&nbsp;"
         , badgeNum: ""
-        , completenessMsg: "&nbsp;" # Right now just showing the total num of actions
+        , completenessMsg: # Right now just showing the total num of actions
+            if (!@model.get('actions') || !@model.get('actions').length) # "" || 0
+              "&nbsp;"
+            else
+              @model.get('actions').length + " actions"
         , dueMsg:
             if (@model.get("dueDate"))
               dueDate = (new Date(@model.get("dueDate"))).getTime()
@@ -62,7 +66,7 @@ $ ->
               difference = dueDate - today
               difference /= (1000*60*60*24)
               if (difference == 0)
-                "today"
+                "due today"
               else if (difference == 1)
                 "1 day left"
               else if (difference == -1)
@@ -73,7 +77,7 @@ $ ->
                 difference + " days overdue"
             else
               ""
-        , createdByName: 
+        , createdByName:
             if (@model.get("createdBy") == $.cookie('user_id')) then "Me" else "Other"
       }) 
       @
@@ -134,10 +138,10 @@ $ ->
   createTaskView.delegateEvents({
       "click input.foldup": "close"
       "submit #createTaskForm": ->
-        console.log("delegated")
-        console.log(@$('input[name=name]'))
-        console.log(@$('input[name=dueDate]'))
-        console.log(@$('#actions_input .action input'))
+        # console.log("delegated")
+        # console.log(@$('input[name=name]'))
+        # console.log(@$('input[name=dueDate]'))
+        # console.log(@$('#actions_input .action input'))
         tasks.create({
             name: @$('input[name=name]').val() || "New Task"
           , createdBy: $.cookie('user_id')

@@ -101,8 +101,8 @@
         $(this.el).html(this.template({
           taskName: this.model.get('name') || "&nbsp;",
           badgeNum: "",
-          completenessMsg: "&nbsp;",
-          dueMsg: this.model.get("dueDate") ? (dueDate = (new Date(this.model.get("dueDate"))).getTime(), today = (new Date()).setHours(0, 0, 0, 0), difference = dueDate - today, difference /= 1000 * 60 * 60 * 24, difference === 0 ? "today" : difference === 1 ? "1 day left" : difference === -1 ? "1 day overdue" : difference > 1 ? difference + " days left" : difference < -1 ? difference + " days overdue" : void 0) : "",
+          completenessMsg: !this.model.get('actions') || !this.model.get('actions').length ? "&nbsp;" : this.model.get('actions').length + " actions",
+          dueMsg: this.model.get("dueDate") ? (dueDate = (new Date(this.model.get("dueDate"))).getTime(), today = (new Date()).setHours(0, 0, 0, 0), difference = dueDate - today, difference /= 1000 * 60 * 60 * 24, difference === 0 ? "due today" : difference === 1 ? "1 day left" : difference === -1 ? "1 day overdue" : difference > 1 ? difference + " days left" : difference < -1 ? difference + " days overdue" : void 0) : "",
           createdByName: this.model.get("createdBy") === $.cookie('user_id') ? "Me" : "Other"
         }));
         return this;
@@ -211,10 +211,6 @@
       "click input.foldup": "close",
       "submit #createTaskForm": function() {
         var action;
-        console.log("delegated");
-        console.log(this.$('input[name=name]'));
-        console.log(this.$('input[name=dueDate]'));
-        console.log(this.$('#actions_input .action input'));
         tasks.create({
           name: this.$('input[name=name]').val() || "New Task",
           createdBy: $.cookie('user_id'),
