@@ -5,7 +5,7 @@
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
   $(function() {
-    var CollapsibleView, Task, TaskListItemView, TaskListView, Tasks, createTaskView, findPeopleView, taskListView, tasks;
+    var ActionItemFormView, ActionsFormView, CollapsibleView, Task, TaskListItemView, TaskListView, Tasks, actionsFormView, createTaskView, findPeopleView, taskListView, tasks;
     _.templateSettings = {
       interpolate: /\{\{(.+?)\}\}/g
     };
@@ -102,7 +102,7 @@
           taskName: this.model.get('name') || "&nbsp;",
           badgeNum: "",
           completenessMsg: "&nbsp;",
-          dueMsg: this.model.get("dueDate") ? (dueDate = (new Date(this.model.get("dueDate"))).getTime(), today = (new Date()).setHours(0, 0, 0, 0), console.log(this.model.get("dueDate")), difference = dueDate - today, difference /= 1000 * 60 * 60 * 24, difference === 0 ? "today" : difference === 1 ? "1 day left" : difference === -1 ? "1 day overdue" : difference > 1 ? difference + " days left" : difference < -1 ? difference + " days overdue" : void 0) : "",
+          dueMsg: this.model.get("dueDate") ? (dueDate = (new Date(this.model.get("dueDate"))).getTime(), today = (new Date()).setHours(0, 0, 0, 0), difference = dueDate - today, difference /= 1000 * 60 * 60 * 24, difference === 0 ? "today" : difference === 1 ? "1 day left" : difference === -1 ? "1 day overdue" : difference > 1 ? difference + " days left" : difference < -1 ? difference + " days overdue" : void 0) : "",
           createdByName: this.model.get("createdBy") === $.cookie('user_id') ? "Me" : "Other"
         }));
         return this;
@@ -185,7 +185,8 @@
           return $(topbarLink).addClass('active');
         });
         return $(this.el).on('hide', function() {
-          return $(topbarLink).removeClass('active');
+          $(topbarLink).removeClass('active');
+          return _this.clearForm();
         });
       };
 
@@ -206,21 +207,99 @@
     findPeopleView = new CollapsibleView({
       el: '#find_people'
     });
-    return createTaskView.delegateEvents({
+    createTaskView.delegateEvents({
       "click input.foldup": "close",
       "submit #createTaskForm": function() {
+        var action;
         console.log("delegated");
         console.log(this.$('input[name=name]'));
         console.log(this.$('input[name=dueDate]'));
+        console.log(this.$('#actions_input .action input'));
         tasks.create({
           name: this.$('input[name=name]').val() || "New Task",
           createdBy: $.cookie('user_id'),
-          dueDate: this.$('input[name=dueDate]').val()
+          dueDate: this.$('input[name=dueDate]').val(),
+          actions: (function() {
+            var _i, _len, _ref, _results;
+            _ref = this.$('#actions_input .action input');
+            _results = [];
+            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+              action = _ref[_i];
+              if ($(action).val()) {
+                _results.push({
+                  name: $(action).val()
+                });
+              }
+            }
+            return _results;
+          }).call(this)
         });
-        this.close();
-        return this.clearForm();
+        return this.close();
       }
     });
+    ActionItemFormView = (function(_super) {
+
+      __extends(ActionItemFormView, _super);
+
+      ActionItemFormView.name = 'ActionItemFormView';
+
+      function ActionItemFormView() {
+        this.add = __bind(this.add, this);
+
+        this.render = __bind(this.render, this);
+        return ActionItemFormView.__super__.constructor.apply(this, arguments);
+      }
+
+      ActionItemFormView.prototype.className = "action";
+
+      ActionItemFormView.prototype.template = _.template($("#action_item_template").html());
+
+      ActionItemFormView.prototype.render = function() {
+        $(this.el).html(this.template);
+        return this;
+      };
+
+      ActionItemFormView.prototype.events = {
+        "click i.remove": "remove",
+        "click i.add": "add"
+      };
+
+      ActionItemFormView.prototype.add = function() {
+        return actionsFormView.addOne(this);
+      };
+
+      return ActionItemFormView;
+
+    })(Backbone.View);
+    ActionsFormView = (function(_super) {
+
+      __extends(ActionsFormView, _super);
+
+      ActionsFormView.name = 'ActionsFormView';
+
+      function ActionsFormView() {
+        this.addOne = __bind(this.addOne, this);
+        return ActionsFormView.__super__.constructor.apply(this, arguments);
+      }
+
+      ActionsFormView.prototype.el = $('#actions_input');
+
+      ActionsFormView.prototype.initialize = function() {
+        var itemView;
+        itemView = new ActionItemFormView;
+        return this.$(".controls").prepend(itemView.render().el);
+      };
+
+      ActionsFormView.prototype.addOne = function(current_item) {
+        var itemView;
+        itemView = new ActionItemFormView;
+        return current_item.$el.after(itemView.render().el);
+      };
+
+      return ActionsFormView;
+
+    })(Backbone.View);
+    return actionsFormView = new ActionsFormView;
   });
 
 }).call(this);

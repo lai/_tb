@@ -54,12 +54,11 @@ $ ->
           #@model.toJSON()
           taskName: @model.get('name') || "&nbsp;"
         , badgeNum: ""
-        , completenessMsg: "&nbsp;"
+        , completenessMsg: "&nbsp;" # Right now just showing the total num of actions
         , dueMsg:
             if (@model.get("dueDate"))
               dueDate = (new Date(@model.get("dueDate"))).getTime()
               today = (new Date()).setHours(0, 0, 0, 0)
-              console.log(@model.get("dueDate"))
               difference = dueDate - today
               difference /= (1000*60*60*24)
               if (difference == 0)
@@ -120,9 +119,10 @@ $ ->
         $(topbarLink).addClass 'active'
       $(@el).on 'hide', =>
         $(topbarLink).removeClass 'active'
+        @clearForm()
 
     close: ->
-      $(@el).collapse('hide')
+      $(@el).collapse('hide')      
       
     clearForm: ->
       @.$(".controls input").val("")
@@ -137,13 +137,47 @@ $ ->
         console.log("delegated")
         console.log(@$('input[name=name]'))
         console.log(@$('input[name=dueDate]'))
+        console.log(@$('#actions_input .action input'))
         tasks.create({
             name: @$('input[name=name]').val() || "New Task"
           , createdBy: $.cookie('user_id')
           , dueDate: @$('input[name=dueDate]').val()
+          , actions:
+              {name: $(action).val()} for action in @$('#actions_input .action input') when $(action).val() 
         })
         @close()
-        @clearForm()
   });
   
+  class ActionItemFormView extends Backbone.View
+    
+    className: "action"
+    template: _.template($("#action_item_template").html())
+    
+    render: =>
+      $(@el).html @template
+      @
+      
+    events:
+      "click i.remove": "remove"
+      "click i.add": "add"
+      
+    add: =>
+      actionsFormView.addOne(@)
+    
 
+  class ActionsFormView extends Backbone.View
+    
+    el: $ '#actions_input'
+    # items: []
+    
+    initialize: ->
+      itemView = new ActionItemFormView
+      # @items.push(itemView)
+      @$(".controls").prepend itemView.render().el
+      
+    addOne: (current_item) =>
+      itemView = new ActionItemFormView      
+      current_item.$el.after itemView.render().el
+    
+
+  actionsFormView = new ActionsFormView

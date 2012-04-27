@@ -119,6 +119,15 @@ ul.visitor_links li {
 #create_task,
 #find_people {
   background-color: #f8f8f8;
+  .control-label {
+    width: 100px;
+  }
+  .controls {
+    margin-left: 120px;
+  }
+  .form-actions {
+    padding-left: 120px;
+  }
 }
 #create_task:after,
 #find_people:after {
@@ -133,7 +142,7 @@ ul.visitor_links li {
 }
 #create_task .control-group,
 #find_people .control-group {
-  margin-bottom: 4px;
+  margin-bottom: 8px;
 }
 #create_task .form-actions,
 #find_people .form-actions {
@@ -143,14 +152,35 @@ ul.visitor_links li {
   padding-top: 0;
   padding-bottom: 2px;
 }
-#create_task i,
-#find_people i {
-  font-size: 16px;
+#create_task i {
+  font-size: 14px;
   height: 16px;
-  line-height: 28px;
+  line-height: 22px;
   display: inline-block;
   margin-left: 6px;
   color: #444;
+  text-shadow: rgba(255, 255, 255, 0.85) 0px 1px 1px;
+  cursor: pointer;
+}
+#create_task {
+  fieldset {
+    position: relative;
+  }
+  #actions_input {
+    position: absolute;
+    float: right;    
+    top: 0px;
+    right: 90px;
+    .action {
+      margin-bottom: 9px;
+    }
+    .help-block {
+      //font-size: 13px;
+      text-shadow: rgba(255, 255, 255, 0.85) 0px 1px 1px;
+      width: 285px;
+      color: #888;
+    }
+  }
 }
 .main {
   margin-top: 20px;

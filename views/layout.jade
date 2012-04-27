@@ -64,23 +64,25 @@ html
                   label.control-label Task
                   .controls
                     input.input-xlarge(type="text", name="name", placeholder="Task Name")
-                    p.help-block
-                .control-group
-                  label.control-label Action
+                    //p.help-block
+                #actions_input.control-group
+                  label.control-label Action List
                   .controls
-                    input.input-xlarge(type="text", placeholder="Action Name")
-                    i +
-                    p.help-block
+                    #action_item_template(style='display: none')
+                      input.input-xlarge(type="text", placeholder="Action Name")
+                      i.remove -
+                      i.add +
+                    //p.help-block When entering action items, press "&darr;" to create a new item following it.
                 .control-group
                   label.control-label Due
                   .controls
                     input.datepicker.input-xlarge(type="text", name="dueDate", placeholder="Due Date")
-                    p.help-block
+                    //p.help-block
                 .control-group
                   label.control-label People
                   .controls
                     input.input-xlarge(type="text", placeholder="Names")
-                    p.help-block
+                    //p.help-block
                 .form-actions
                   input.btn.btn-primary(type="submit", value="Create")
                   = " "
