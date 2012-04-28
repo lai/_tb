@@ -16,7 +16,11 @@ $ ->
     idAttribute: "_id"
     collection: Tasks
     url: =>
-      '/tasks/' + @.get('_id') + '.json'
+      console.log(@.get('_id'))
+      if (@.get('_id'))
+        '/tasks/' + @.get('_id') + '.json'        
+      else
+        '/tasks.json'        
     
     defaults:
       name: "New Task"
@@ -62,7 +66,13 @@ $ ->
       $(@el).html @template({
           #@model.toJSON()
           taskName: @model.get('name') || "&nbsp;"
-        , badgeNum: ""
+        , badgeNum: 
+            if @model.get('actions').length
+              unfinished = @model.get('actions').filter (todo) ->
+                !todo.done
+              if (unfinished.length) then unfinished.length else ""
+            else
+              ""
         , completenessMsg: # Right now just showing the total num of actions
             if (!@model.get('actions') || !@model.get('actions').length) # "" || 0
               "&nbsp;"
@@ -145,10 +155,11 @@ $ ->
       @
       
     toggleDone: =>
-      console.log "toggle now!"
+      # console.log "toggle now!"
       $(@el).toggleClass("completed")
       @model.done = !@model.done
       @taskModel.save()
+      @taskModel.trigger('change')
     
     
   class TaskContentView extends Backbone.View

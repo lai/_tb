@@ -123,7 +123,7 @@ app.get('/tasks', validateUser, function (req, res) {
 });
 
 app.get('/tasks.json', validateUser, function(req, res) {
-  Task.find(function(err, documents) {
+  Task.find({ createdBy: req.user.id }, function(err, documents) {
       res.send(documents.map(function(d) {
         return d.toObject();
       }));
@@ -135,25 +135,25 @@ app.post('/tasks.json', validateUser, function(req, res) {
   //console.log(req.body);
   var t = new Task(req.body);
   //t.assignedTo.push(req.user);
-  console.log(t);
+  // console.log(t);
   //t.createdBy = req.user._id;
   t.save(function(err) {
     if (err)
-      console.log("failed"+err);
+      // console.log("failed"+err);
     var data = t.toObject();
-    console.log("task saved!");
+    // console.log("task saved!");
     res.send(data);
   });
 });
 
 // Update task
 app.put('/tasks/:id.:format?', validateUser, function(req, res) {
-  console.log(req.body.actions);
-  console.log(req.params.id)
+  // console.log(req.body.actions);
+  // console.log(req.params.id)
   Task.update({ _id: req.params.id }, {actions: req.body.actions}, false, false, function(err, t) {
     // if (!t) return next('Task not found');
     t = req.body;
-    console.log(err);
+    // console.log(err);
     res.send(t.toObject());
   });
 });
@@ -165,7 +165,7 @@ app.get('/profile', validateUser, function (req, res) {
 });
 
 app.post('/profile', validateUser, function (req, res) {
-  console.log(req.body);
+  // console.log(req.body);
   
   //console.log(updatedUser);
 

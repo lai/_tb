@@ -43,7 +43,12 @@
       Task.prototype.collection = Tasks;
 
       Task.prototype.url = function() {
-        return '/tasks/' + this.get('_id') + '.json';
+        console.log(this.get('_id'));
+        if (this.get('_id')) {
+          return '/tasks/' + this.get('_id') + '.json';
+        } else {
+          return '/tasks.json';
+        }
       };
 
       Task.prototype.defaults = {
@@ -118,10 +123,12 @@
       };
 
       TaskListItemView.prototype.render = function() {
-        var difference, dueDate, today;
+        var difference, dueDate, today, unfinished;
         $(this.el).html(this.template({
           taskName: this.model.get('name') || "&nbsp;",
-          badgeNum: "",
+          badgeNum: this.model.get('actions').length ? (unfinished = this.model.get('actions').filter(function(todo) {
+            return !todo.done;
+          }), unfinished.length ? unfinished.length : "") : "",
           completenessMsg: !this.model.get('actions') || !this.model.get('actions').length ? "&nbsp;" : this.model.get('actions').length + " actions",
           dueMsg: this.model.get("dueDate") ? (dueDate = (new Date(this.model.get("dueDate"))).getTime(), today = (new Date()).setHours(0, 0, 0, 0), difference = dueDate - today, difference /= 1000 * 60 * 60 * 24, difference === 0 ? "due today" : difference === 1 ? "1 day left" : difference === -1 ? "1 day overdue" : difference > 1 ? difference + " days left" : difference < -1 ? difference + " days overdue" : void 0) : "",
           createdByName: this.model.get("createdBy") === $.cookie('user_id') ? "Me" : "Other"
@@ -224,10 +231,10 @@
       };
 
       ActionItemContentView.prototype.toggleDone = function() {
-        console.log("toggle now!");
         $(this.el).toggleClass("completed");
         this.model.done = !this.model.done;
-        return this.taskModel.save();
+        this.taskModel.save();
+        return this.taskModel.trigger('change');
       };
 
       return ActionItemContentView;
