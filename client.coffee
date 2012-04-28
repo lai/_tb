@@ -2,12 +2,21 @@ $ ->
   
   _.templateSettings = {
     interpolate : /\{\{(.+?)\}\}/g
-  }  
+  }
+  
+  class AppStatus extends Backbone.Model
+    
+    defaults:
+      selectedTask: null
+      
+  appStatus = new AppStatus
   
   class Task extends Backbone.Model
     
     idAttribute: "_id"
     collection: Tasks
+    url: =>
+      '/tasks/' + @.get('_id') + '.json'
     
     defaults:
       name: "New Task"
@@ -46,7 +55,7 @@ $ ->
       "click": "open"
       
     initialize: ->
-      @model.bind 'change', @render
+      @model.on 'change', @render
       @model.view = @
       
     render: =>
@@ -82,7 +91,10 @@ $ ->
       }) 
       @
       
-    open: =>
+    open: ->
+      $("#tasks .selected").removeClass('selected')
+      @$el.addClass('selected')
+      appStatus.set "selectedTask": @model
       
     remove: ->
       $(@el).remove()
@@ -96,9 +108,9 @@ $ ->
     el: $ '#tasks'
     
     initialize: ->
-      tasks.bind 'add', @addOne
-      tasks.bind 'reset', @addAll
-      tasks.bind 'all', @render
+      tasks.on 'add', @addOne
+      tasks.on 'reset', @addAll
+      tasks.on 'all', @render
       tasks.fetch()
       
     render: =>
@@ -111,6 +123,68 @@ $ ->
       tasks.each @addOne
       
   taskListView = new TaskListView
+  
+  class ActionItemContentView extends Backbone.View
+    
+    className: "action"
+    template: _.template($("#action_item_content_template").html())
+          
+    events:
+      "click .checkbox": "toggleDone"
+        
+    initialize: ->
+      #console.log @model.done
+      #@className = "action completed" if @model.done
+    
+    render: =>
+      #console.log @Collection
+      $(@el).addClass("completed") if @model.done
+      $(@el).html @template({
+          actionName: @model.name
+      })
+      @
+      
+    toggleDone: =>
+      console.log "toggle now!"
+      $(@el).toggleClass("completed")
+      @model.done = !@model.done
+      @taskModel.save()
+    
+    
+  class TaskContentView extends Backbone.View
+    
+    el: $ '#TaskContentView'
+    
+    controls_template: _.template($("#actions_controls_template").html())
+    
+    initialize: ->
+      appStatus.on('change:selectedTask', @render)
+      #@$el.append
+      
+    render: =>
+      @$("#actions_placeholder").remove()
+      @$("#actions_controls").remove()
+      @model = appStatus.get "selectedTask"
+      @$el.prepend @controls_template({
+        createdByName: if (@model.get("createdBy") == $.cookie('user_id')) then "Me" else "Other"
+        createdOnDate: (new Date(@model.get("createDate"))).toLocaleDateString()
+      })
+      
+      @$("#actions").html ""
+      actions = @model.get "actions"
+      if (!actions.length)
+        @$("#actions").html "This task has no actions."
+      else
+        for action in actions
+          itemView = new ActionItemContentView model: action
+          itemView.taskModel = @model
+          itemView.Collection = actions
+          @$("#actions").append itemView.render().el
+      # @model is avaiable now
+      #console.log(tasks.selectedTask)
+      #console.log appStatus.get "selectedTask"
+      
+  window.taskContentView = new TaskContentView
   
   class CollapsibleView extends Backbone.View
     
@@ -155,7 +229,7 @@ $ ->
   class ActionItemFormView extends Backbone.View
     
     className: "action"
-    template: _.template($("#action_item_template").html())
+    template: _.template($("#action_item_form_template").html())
     
     render: =>
       $(@el).html @template

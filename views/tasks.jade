@@ -31,4 +31,14 @@ ul.nav.nav-pills
 
   
   // TaskContentView
-  .span8
+  #TaskContentView.span8
+    #actions_placeholder No Task Is Selected
+    #actions_controls_template(style='display: none')
+      #actions_controls
+        a#add_action(href="#") Add a Action
+        .created-data Created by {{ createdByName }} on {{ createdOnDate }}
+    #actions
+      #action_item_content_template(style='display: none')
+        span.checkbox
+        span.action_name {{ actionName }}
+        

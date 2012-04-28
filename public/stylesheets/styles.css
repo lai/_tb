@@ -286,6 +286,19 @@ ul.visitor_links li {
 .badge:hover {
   cursor: auto;
 }
+#actions_placeholder {
+  height: 120px;
+  width: 100%;
+  border-radius: 12px;
+  border: 2px dashed #ccc;
+  text-transform: uppercase;
+  color: #bbb;
+  text-align: center;
+  padding-top: 80px;
+  font-size: 20px;
+  font-weight: bold;
+  text-shadow: rgba(255, 255, 255, 0.85) 0px 1px 1px;
+}
 #actions_controls {
   height: 30px;
   padding: 6px 6px 0;
@@ -297,33 +310,33 @@ ul.visitor_links li {
   color: #888;
   font-size: 12px;
 }
-.actions .action {
+#actions .action {
   height: 30px;
   background-color: rgba(255, 255, 255, 0.65);
   color: #444;
   margin-bottom: 1px;
   font-size: 16px;
 }
-.actions .action.completed {
+#actions .action.completed {
   background-color: transparent;
   color: #888;
 }
-.actions .action.completed .checkbox {
+#actions .action.completed .checkbox {
   border: none;
   background: none;
 }
-.actions .action.completed .checkbox:after {
+#actions .action.completed .checkbox:after {
   content: "=";
   display: table;
   font-family: iconSweetsRegular;
   margin-left: -15px;
-  margin-right: -1px;
+  margin-right: 3px;
 }
-.actions .action .action_name {
+#actions .action .action_name {
   display: inline-block;
   padding: 6px 0;
 }
-.actions .action .checkbox {
+#actions .action .checkbox {
   width: 20px;
   height: 20px;
   background: rgba(255, 255, 255, 0.7);

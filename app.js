@@ -57,7 +57,11 @@ Users.plugin(mongooseAuth, {
         }
     }
 });
-Users.email
+
+var Actions = new Schema({
+    name : String
+  , done : { type: Boolean, default: false }
+});
 
 var Tasks = new Schema({
     name: { type: String, default: "New Task" }
@@ -65,7 +69,7 @@ var Tasks = new Schema({
   , done: { type: Boolean, default: false }
   , createDate: { type: Date, default: Date.now }
   , createdBy: { type: Schema.ObjectId, ref: 'User' }
-  , actions: [{ name: String, done: { type: Boolean, default: false } }]
+  , actions: [Actions]
   , assignedTo: [{ type: Schema.ObjectId, ref: 'User'}]
 });
 
@@ -141,6 +145,19 @@ app.post('/tasks.json', validateUser, function(req, res) {
     res.send(data);
   });
 });
+
+// Update task
+app.put('/tasks/:id.:format?', validateUser, function(req, res) {
+  console.log(req.body.actions);
+  console.log(req.params.id)
+  Task.update({ _id: req.params.id }, {actions: req.body.actions}, false, false, function(err, t) {
+    // if (!t) return next('Task not found');
+    t = req.body;
+    console.log(err);
+    res.send(t.toObject());
+  });
+});
+
 
 app.get('/profile', validateUser, function (req, res) {
   //console.log(mongooseAuth.user);

@@ -5,10 +5,28 @@
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
   $(function() {
-    var ActionItemFormView, ActionsFormView, CollapsibleView, Task, TaskListItemView, TaskListView, Tasks, actionsFormView, createTaskView, findPeopleView, taskListView, tasks;
+    var ActionItemContentView, ActionItemFormView, ActionsFormView, AppStatus, CollapsibleView, Task, TaskContentView, TaskListItemView, TaskListView, Tasks, actionsFormView, appStatus, createTaskView, findPeopleView, taskListView, tasks;
     _.templateSettings = {
       interpolate: /\{\{(.+?)\}\}/g
     };
+    AppStatus = (function(_super) {
+
+      __extends(AppStatus, _super);
+
+      AppStatus.name = 'AppStatus';
+
+      function AppStatus() {
+        return AppStatus.__super__.constructor.apply(this, arguments);
+      }
+
+      AppStatus.prototype.defaults = {
+        selectedTask: null
+      };
+
+      return AppStatus;
+
+    })(Backbone.Model);
+    appStatus = new AppStatus;
     Task = (function(_super) {
 
       __extends(Task, _super);
@@ -16,12 +34,17 @@
       Task.name = 'Task';
 
       function Task() {
+        this.url = __bind(this.url, this);
         return Task.__super__.constructor.apply(this, arguments);
       }
 
       Task.prototype.idAttribute = "_id";
 
       Task.prototype.collection = Tasks;
+
+      Task.prototype.url = function() {
+        return '/tasks/' + this.get('_id') + '.json';
+      };
 
       Task.prototype.defaults = {
         name: "New Task",
@@ -77,8 +100,6 @@
       TaskListItemView.name = 'TaskListItemView';
 
       function TaskListItemView() {
-        this.open = __bind(this.open, this);
-
         this.render = __bind(this.render, this);
         return TaskListItemView.__super__.constructor.apply(this, arguments);
       }
@@ -92,7 +113,7 @@
       };
 
       TaskListItemView.prototype.initialize = function() {
-        this.model.bind('change', this.render);
+        this.model.on('change', this.render);
         return this.model.view = this;
       };
 
@@ -108,7 +129,13 @@
         return this;
       };
 
-      TaskListItemView.prototype.open = function() {};
+      TaskListItemView.prototype.open = function() {
+        $("#tasks .selected").removeClass('selected');
+        this.$el.addClass('selected');
+        return appStatus.set({
+          "selectedTask": this.model
+        });
+      };
 
       TaskListItemView.prototype.remove = function() {
         return $(this.el).remove();
@@ -139,9 +166,9 @@
       TaskListView.prototype.el = $('#tasks');
 
       TaskListView.prototype.initialize = function() {
-        tasks.bind('add', this.addOne);
-        tasks.bind('reset', this.addAll);
-        tasks.bind('all', this.render);
+        tasks.on('add', this.addOne);
+        tasks.on('reset', this.addAll);
+        tasks.on('all', this.render);
         return tasks.fetch();
       };
 
@@ -163,6 +190,100 @@
 
     })(Backbone.View);
     taskListView = new TaskListView;
+    ActionItemContentView = (function(_super) {
+
+      __extends(ActionItemContentView, _super);
+
+      ActionItemContentView.name = 'ActionItemContentView';
+
+      function ActionItemContentView() {
+        this.toggleDone = __bind(this.toggleDone, this);
+
+        this.render = __bind(this.render, this);
+        return ActionItemContentView.__super__.constructor.apply(this, arguments);
+      }
+
+      ActionItemContentView.prototype.className = "action";
+
+      ActionItemContentView.prototype.template = _.template($("#action_item_content_template").html());
+
+      ActionItemContentView.prototype.events = {
+        "click .checkbox": "toggleDone"
+      };
+
+      ActionItemContentView.prototype.initialize = function() {};
+
+      ActionItemContentView.prototype.render = function() {
+        if (this.model.done) {
+          $(this.el).addClass("completed");
+        }
+        $(this.el).html(this.template({
+          actionName: this.model.name
+        }));
+        return this;
+      };
+
+      ActionItemContentView.prototype.toggleDone = function() {
+        console.log("toggle now!");
+        $(this.el).toggleClass("completed");
+        this.model.done = !this.model.done;
+        return this.taskModel.save();
+      };
+
+      return ActionItemContentView;
+
+    })(Backbone.View);
+    TaskContentView = (function(_super) {
+
+      __extends(TaskContentView, _super);
+
+      TaskContentView.name = 'TaskContentView';
+
+      function TaskContentView() {
+        this.render = __bind(this.render, this);
+        return TaskContentView.__super__.constructor.apply(this, arguments);
+      }
+
+      TaskContentView.prototype.el = $('#TaskContentView');
+
+      TaskContentView.prototype.controls_template = _.template($("#actions_controls_template").html());
+
+      TaskContentView.prototype.initialize = function() {
+        return appStatus.on('change:selectedTask', this.render);
+      };
+
+      TaskContentView.prototype.render = function() {
+        var action, actions, itemView, _i, _len, _results;
+        this.$("#actions_placeholder").remove();
+        this.$("#actions_controls").remove();
+        this.model = appStatus.get("selectedTask");
+        this.$el.prepend(this.controls_template({
+          createdByName: this.model.get("createdBy") === $.cookie('user_id') ? "Me" : "Other",
+          createdOnDate: (new Date(this.model.get("createDate"))).toLocaleDateString()
+        }));
+        this.$("#actions").html("");
+        actions = this.model.get("actions");
+        if (!actions.length) {
+          return this.$("#actions").html("This task has no actions.");
+        } else {
+          _results = [];
+          for (_i = 0, _len = actions.length; _i < _len; _i++) {
+            action = actions[_i];
+            itemView = new ActionItemContentView({
+              model: action
+            });
+            itemView.taskModel = this.model;
+            itemView.Collection = actions;
+            _results.push(this.$("#actions").append(itemView.render().el));
+          }
+          return _results;
+        }
+      };
+
+      return TaskContentView;
+
+    })(Backbone.View);
+    window.taskContentView = new TaskContentView;
     CollapsibleView = (function(_super) {
 
       __extends(CollapsibleView, _super);
@@ -248,7 +369,7 @@
 
       ActionItemFormView.prototype.className = "action";
 
-      ActionItemFormView.prototype.template = _.template($("#action_item_template").html());
+      ActionItemFormView.prototype.template = _.template($("#action_item_form_template").html());
 
       ActionItemFormView.prototype.render = function() {
         $(this.el).html(this.template);
